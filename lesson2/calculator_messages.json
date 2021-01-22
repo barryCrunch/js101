@@ -1,0 +1,12 @@
+{
+"en-US" : {
+    "welcome": "Welcome to Calculator!",
+    "invalidNumber": "Hmm... that doesn't look like a valid number.",
+    "againMessage": "Would you like to perform another operation? (y/n)"
+  },
+"es-MX" : {
+    "welcome": "¡Bienvenido a Calculadora!",
+    "invalidNumber": "Hmm ... eso no parece un número válido.",
+    "againMessage": "¿Le gustaría realizar otra operación? (y / n)"
+  }
+}

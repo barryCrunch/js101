@@ -1,5 +1,6 @@
 // calculator.js
 const readline = require('readline-sync');
+const MESSAGES = require('./calculator_messages.json');
 
 function prompt(message) {
   console.log(`=> ${message}`);
@@ -14,8 +15,14 @@ function invalidNumber(number) {
 // Ask the user for an operation to perform.
 // Perform the operation on the two numbers.
 // Print the result to the terminal.
+prompt("Please select your locale");
+for (let index = 0; index < Object.keys(MESSAGES).length; index++) {
+  console.log(`${index + 1}) ${Object.keys(MESSAGES)[index]}`);
+}
+let localeChoice = readline.question();
+const locale = Object.keys(MESSAGES)[Number(localeChoice) - 1];
 
-prompt('Welcome to Calculator!');
+prompt(MESSAGES[locale]['welcome']);
 
 while (true) {
 
@@ -23,7 +30,7 @@ while (true) {
   let number1 = readline.question();
 
   while (invalidNumber(number1)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(MESSAGES[locale]['invalidNumber']);
     number1 = readline.question();
   }
 
@@ -31,7 +38,7 @@ while (true) {
   let number2 = readline.question();
 
   while (invalidNumber(number2)) {
-    prompt("Hmm... that doesn't look like a valid number.");
+    prompt(MESSAGES[locale]['invalidNumber']);
     number2 = readline.question();
   }
 
@@ -61,7 +68,7 @@ while (true) {
 
   console.log(`the result is: ${output}`);
 
-  prompt('Would you like to perform another operation? (y/n)');
+  prompt(MESSAGES[locale]['againMessage']);
   let answer = readline.question();
   if (answer[0].toLowerCase() !== 'y') break;
 }
