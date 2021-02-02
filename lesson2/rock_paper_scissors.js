@@ -9,43 +9,39 @@ const WINNING_COMBINATIONS = {
 };
 const VALID_CHOICES = Object.keys(WINNING_COMBINATIONS);
 const BEST_OF_NUMBER = 5;
-let computerScore = 0;
-let playerScore = 0;
-let numberOfTies = 0;
 
-function displayWinner(userChoice, computerChoice) {
+function getWinner(userChoice, computerChoice) {
   prompt(`You chose ${userChoice}, computer chose ${computerChoice}`);
   if (WINNING_COMBINATIONS[userChoice].includes(computerChoice)) {
-    prompt('You win!');
-    adjustScore('player');
+    prompt('You win!\n');
+    return 'player';
   } else if (WINNING_COMBINATIONS[computerChoice].includes(userChoice)) {
-    prompt('Computer wins!');
-    adjustScore('computer');
+    prompt('Computer wins!\n');
+    return 'computer';
   } else {
-    prompt("It's a tie");
-    adjustScore('tie');
+    prompt("It's a tie\n");
+    return 'tie';
   }
-  console.log("\n");
 }
 
 function prompt(message) {
   console.log(`=> ${message}`);
 }
 
-function adjustScore(winner) {
+function adjustScore(winner, scores) {
   if (winner === 'player') {
-    playerScore += 1;
+    scores['player'] += 1;
   } else if (winner === 'computer') {
-    computerScore += 1;
+    scores['computer'] += 1;
   } else if (winner === 'tie') {
-    numberOfTies += 1;
+    scores['ties'] += 1;
   }
 }
 
 function getUserChoice(availableChoices) {
   while (availableChoices.length > 1) {
     prompt(`Choose one: ${availableChoices.join(', ')}`);
-    let choice = readline.question();
+    let choice = readline.question().toLowerCase();
     let filteredChoices = availableChoices.filter(item => {
       return item.substring(0, choice.length) === choice;
     });
@@ -66,20 +62,34 @@ function displayRound(round) {
   console.log("====================================");
   console.log(`           ROUND ${round}           `);
   console.log("====================================");
+  if (round === 1) {
+    console.log(`The game is best out of ${BEST_OF_NUMBER}\n`);
+  }
 }
 
-function displayFinalScore(winner) {
+function displayFinalScore(winner, scores) {
 
   console.log("====================================");
   console.log(`           WINNER: ${winner}           `);
   console.log("====================================");
-  console.log(`Player Score: ${playerScore} -- Computer Score: ${computerScore}`);
-  console.log(`Number of Ties: ${numberOfTies}`);
-  console.log("\n\n\n");
+  console.log(`Player Score: ${scores['player']} -- Computer Score: ${scores['computer']}`);
+  console.log(`Number of Ties: ${scores['ties']}`);
+  console.log("\n\n");
+}
+
+function playAgain() {
+  prompt('Do you want to play again (y/n)?');
+  let answer = readline.question().toLowerCase();
+  while (answer !== 'n' && answer !== 'y') {
+    prompt('Please enter "y" or "n".');
+    answer = readline.question().toLowerCase();
+  }
+  return answer !== 'y';
 }
 
 
 while (true) {
+  let scores = {player: 0, computer: 0, ties: 0};
   let numberOfRounds = 0;
   console.clear();
   while (numberOfRounds < BEST_OF_NUMBER) {
@@ -90,24 +100,18 @@ while (true) {
     let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
     let computerChoice = VALID_CHOICES[randomIndex];
 
-    displayWinner(choice, computerChoice);
+    let winner = getWinner(choice, computerChoice);
+    adjustScore(winner, scores);
     numberOfRounds += 1;
   }
 
-  if (computerScore < playerScore) {
-    displayFinalScore('Player');
+  if (scores['computer'] < scores['player']) {
+    displayFinalScore('Player', scores);
   } else {
-    displayFinalScore('Computer');
+    displayFinalScore('Computer', scores);
   }
 
-  prompt('Do you want to play again (y/n)?');
-  let answer = readline.question().toLowerCase();
-  while (answer[0] !== 'n' && answer[0] !== 'y') {
-    prompt('Please enter "y" or "n".');
-    answer = readline.question().toLowerCase();
-  }
-
-  if (answer[0] !== 'y') break;
+  if (playAgain()) break;
 }
 
 
